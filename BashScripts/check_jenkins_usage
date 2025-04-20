@@ -1,0 +1,33 @@
+#!/bin/bash
+
+echo "🔍 Checking Jenkins Resource Usage..."
+
+# Jenkins process info
+echo -e "\n📌 Jenkins Process Info:"
+ps -ef | grep jenkins | grep -v grep
+
+# Memory usage
+echo -e "\n💾 Memory Usage (Top 5 processes):"
+ps aux --sort=-%mem | head -n 6
+
+# Jenkins-specific memory usage
+echo -e "\n📊 Jenkins Memory Usage:"
+ps -C java -o pid,etime,%mem,%cpu,cmd | grep jenkins
+
+# CPU load
+echo -e "\n🔥 CPU Load Averages:"
+uptime
+
+# Disk space
+echo -e "\n💽 Disk Usage:"
+df -h
+
+# Java Heap Size (if using default config file)
+echo -e "\n☕ Java Heap Configuration (JENKINS_JAVA_OPTIONS):"
+if [ -f /etc/default/jenkins ]; then
+  grep JENKINS_JAVA_OPTIONS /etc/default/jenkins
+else
+  echo "No /etc/default/jenkins file found. Java options may be set elsewhere."
+fi
+
+echo -e "\n✅ Done!"
